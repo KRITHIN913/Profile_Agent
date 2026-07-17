@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Font import (fallback if next/font/google is unavailable) ──────── */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+/* ── CSS Custom Properties (design tokens) ─────────────────────────────────── */
+:root {
+  --color-primary:    #0B2545;
+  --color-accent:     #C9A227;
+  --color-background: #F8F9FB;
+  --color-text:       #1A1D23;
+  --color-success:    #1E7F4E;
+  --color-warning:    #B54708;
+  --color-muted:      #6B7280;
+
+  --font-sans: "Roboto", "Inter", system-ui, sans-serif;
+
+  --shadow-card:      0 1px 3px 0 rgba(11, 37, 69, 0.08),
+                      0 1px 2px -1px rgba(11, 37, 69, 0.08);
+  --shadow-card-hover: 0 10px 25px -5px rgba(11, 37, 69, 0.15),
+                       0 8px 10px -6px rgba(11, 37, 69, 0.10);
+}
+
+/* ── Base resets ────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* ── Typography scale ───────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--color-primary);
+}
+
+/* ── Utility: gradient text ─────────────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1a4a8f 50%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Utility: glassmorphism card ────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(11, 37, 69, 0.08);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.glass-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+/* ── Utility: accent underline ──────────────────────────────────────────────── */
+.accent-underline {
+  position: relative;
+}
+.accent-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--color-accent);
+  border-radius: 2px;
+}
+
+/* ── Utility: shimmer loading ───────────────────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(11, 37, 69, 0.06) 25%,
+    rgba(11, 37, 69, 0.12) 50%,
+    rgba(11, 37, 69, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+/* ── Severity badge colours ─────────────────────────────────────────────────── */
+.severity-low    { background-color: #ECFDF5; color: var(--color-success); border: 1px solid #A7F3D0; }
+.severity-medium { background-color: #FFFBEB; color: var(--color-warning); border: 1px solid #FDE68A; }
+.severity-high   { background-color: #FEF2F2; color: #DC2626;              border: 1px solid #FECACA; }
+
+/* ── Confidence badge colours ───────────────────────────────────────────────── */
+.confidence-high   { color: var(--color-success); }
+.confidence-medium { color: var(--color-warning); }
+.confidence-low    { color: var(--color-muted); }
+
+/* ── Scrollbar styling ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: rgba(11, 37, 69, 0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(11, 37, 69, 0.4); }
+
+/* ── Focus ring ─────────────────────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
