@@ -110,6 +110,7 @@ export interface MasterSource {
 export interface DiligenceProfile {
   /** Full name of the subject */
   name: string;
+  profile_image_url?: string | null;
   query_context: QueryContext;
 
   /** High-level narrative paragraph */

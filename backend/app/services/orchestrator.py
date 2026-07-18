@@ -2,8 +2,10 @@ import asyncio
 import uuid
 import logging
 import json
+import os
 from datetime import datetime
 from typing import Dict, Any, Optional
+from openai import AsyncOpenAI
 
 from app.agents.researcher import run_research
 from app.agents.extractor import run_extraction
@@ -133,6 +135,40 @@ async def run_pipeline(job_id: str, name: str, context: dict):
         _add_event(job_id, "validator", "failed", message=repr(e))
         partial_failure = True
         # Profile is still mostly valid, just unvalidated
+        
+    # 4. Generate Image Phase (DALL-E 3)
+    if profile:
+        _add_event(job_id, "image_gen", "running", message="Generating professional portrait via DALL-E 3...")
+        try:
+            kwargs = {
+                "api_key": os.environ.get("OPENAI_API_KEY", "dummy"),
+                "max_retries": 3,
+                "base_url": "https://api.openai.com/v1"
+            }
+            
+            client = AsyncOpenAI(**kwargs)
+            prompt = (
+                f"A highly polished, ultra-realistic corporate portrait of {profile.name}, "
+                f"who is the {profile.basic_details.role} at {profile.basic_details.organization}. "
+                "Clean white background, modern enterprise aesthetics, sharp focus, professional lighting, "
+                "hyper-realistic photography."
+            )
+            response = await client.images.generate(
+                model="dall-e-3",
+                prompt=prompt,
+                size="1024x1024",
+                quality="standard",
+                n=1,
+            )
+            profile.profile_image_url = response.data[0].url
+            _add_event(job_id, "image_gen", "complete")
+        except Exception as e:
+            logger.warning(f"DALL-E 3 unavailable (Tier limits or safety filters). Falling back to dynamic avatar.")
+            import urllib.parse
+            encoded_name = urllib.parse.quote(profile.name)
+            profile.profile_image_url = f"https://ui-avatars.com/api/?name={encoded_name}&background=0a2540&color=fff&size=512&font-size=0.33"
+            _add_event(job_id, "image_gen", "complete", message="Profile avatar finalized.")
+        
         
     # Finalize
     final_status = "partial_complete" if partial_failure else "complete"

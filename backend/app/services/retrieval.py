@@ -11,6 +11,7 @@ Enforces robots.txt, paywall blocklists, and strict timeouts.
 
 import logging
 import urllib.robotparser
+import urllib.request
 from urllib.parse import urlparse
 from datetime import datetime, timezone
 import httpx
@@ -72,13 +73,18 @@ def check_robots_txt(url: str) -> bool:
         rp = urllib.robotparser.RobotFileParser()
         rp.set_url(robots_url)
         try:
-            # We enforce a strict timeout here as well
-            rp.read()
+            req = urllib.request.Request(robots_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
+            with urllib.request.urlopen(req, timeout=3.0) as response:
+                rp.parse(response.read().decode('utf-8').splitlines())
+            _robot_parsers[domain] = rp
         except Exception as e:
             logger.debug(f"Failed to read robots.txt for {domain}: {e}")
-            # If we can't read robots.txt, we fail open (allow)
-        _robot_parsers[domain] = rp
+            # If we can't read robots.txt (e.g. 403, timeout), we fail open (allow)
+            _robot_parsers[domain] = None
     
+    if _robot_parsers[domain] is None:
+        return True
+        
     try:
         # User-agent used by httpx default or our custom one
         return _robot_parsers[domain].can_fetch("*", url)

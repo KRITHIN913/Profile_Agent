@@ -54,15 +54,17 @@ async def generate_queries(name: str, context: dict) -> list[str]:
     """Generates diversified search queries using the LLM."""
     prompt = f"""
 You are an expert private intelligence researcher.
-Based on the target name and provided context, generate a list of 4 highly targeted search queries to uncover:
+Based on the target name and provided context, generate a list of 6 highly targeted search queries to uncover:
 1. Current and past employment/affiliations
 2. Estimates of net worth or major assets (real estate, equity)
 3. Any controversies, legal issues, or regulatory concerns
+4. Philanthropic interests, foundation involvement, and charity donations
+5. Board memberships and corporate affiliations
 
 Target Name: {name}
 Context: {context}
 
-Return exactly 4 queries, one per line. Do not include numbering, bullets, or any other text.
+Return exactly 6 queries, one per line. Do not include numbering, bullets, or any other text.
 """
     if not llm_client:
         return [f"{name} {context.get('employer', '')} news".strip()]
@@ -76,7 +78,7 @@ Return exactly 4 queries, one per line. Do not include numbering, bullets, or an
         text = response.choices[0].message.content or ""
         # Split by newlines, clean up empty lines
         queries = [q.strip("- 1234567890.") for q in text.split("\n") if q.strip()]
-        return queries[:4] if queries else [name]
+        return queries[:6] if queries else [name]
     except Exception as e:
         logger.error(f"Failed to generate queries: {e}")
         return [name]

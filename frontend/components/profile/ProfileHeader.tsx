@@ -8,9 +8,19 @@ export function ProfileHeader({ profile }: { profile: DiligenceProfile }) {
       {/* Executive Summary Card */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 border-t-[6px] border-t-[#0a2540] overflow-hidden">
         <div className="p-6 sm:p-8 space-y-4">
-          <div className="flex items-center gap-3">
-            <User className="h-7 w-7 text-[#c28d27]" />
-            <h1 className="text-2xl font-bold text-[#0a2540] tracking-tight">{profile.name}</h1>
+          <div className="flex items-center gap-4">
+            {profile.profile_image_url ? (
+              <img 
+                src={profile.profile_image_url} 
+                alt={profile.name} 
+                className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover border-4 border-gray-100 shadow-sm"
+              />
+            ) : (
+              <div className="bg-[#fbf4ee] p-3 rounded-full shrink-0">
+                <User className="h-8 w-8 text-[#c28d27]" />
+              </div>
+            )}
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#0a2540] tracking-tight">{profile.name}</h1>
           </div>
           <p className="text-gray-700 leading-relaxed text-[15px]">
             {profile.executive_summary}

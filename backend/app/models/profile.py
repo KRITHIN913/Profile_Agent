@@ -14,9 +14,8 @@ Design rules:
 
 from __future__ import annotations
 
-from typing import Literal
-
-from pydantic import BaseModel, Field
+from typing import Literal, List, Any
+from pydantic import BaseModel, Field, field_validator
 
 
 # ── Atomic building blocks ────────────────────────────────────────────────────
@@ -148,10 +147,14 @@ class DiligenceProfile(BaseModel):
 
     # ── Identity ──────────────────────────────────────────────────────────────
     name: str = Field(..., description="Full name of the subject.")
+    profile_image_url: str | None = Field(default=None, description="Generated avatar/portrait URL")
     query_context: QueryContext = Field(default_factory=QueryContext)
 
     # ── Narrative ─────────────────────────────────────────────────────────────
-    executive_summary: str = Field(default="Not publicly available")
+    executive_summary: str = Field(
+        default="Not publicly available",
+        description="A cohesive 2-3 paragraph professional biography synthesizing the subject's background, current roles, and overarching narrative."
+    )
 
     # ── Structured sections ───────────────────────────────────────────────────
     basic_details: BasicDetails = Field(default_factory=BasicDetails)
@@ -160,6 +163,21 @@ class DiligenceProfile(BaseModel):
     education: list[EducationEntry] = Field(default_factory=list)
     philanthropy: list[PhilanthropyEntry] = Field(default_factory=list)
     affiliations: list[AffiliationEntry] = Field(default_factory=list)
+
+    @field_validator("career_timeline", "education", "philanthropy", "affiliations", mode="after")
+    @classmethod
+    def filter_dummy_entries(cls, v: list[Any]) -> list[Any]:
+        # Filter out entries where the primary fields are all 'Not publicly available'
+        filtered = []
+        for entry in v:
+            # Dump the model to dict
+            data = entry.model_dump()
+            # Check if all string fields (excluding sources) are the default "Not publicly available"
+            str_values = [val for key, val in data.items() if key != "sources" and isinstance(val, str)]
+            if str_values and all(val == "Not publicly available" for val in str_values):
+                continue
+            filtered.append(entry)
+        return filtered
 
     # ── Risk / adverse media ──────────────────────────────────────────────────
     concerns: list[ConcernEntry] = Field(
