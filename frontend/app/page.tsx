@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronUp, Search, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -17,6 +17,16 @@ export default function LandingPage() {
   const [showContext, setShowContext] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [serverStatus, setServerStatus] = useState<"checking" | "awake" | "sleeping">("checking");
+
+  useEffect(() => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    fetch(`${baseUrl}/api/health`)
+      .then(res => {
+        if (res.ok) setServerStatus("awake");
+      })
+      .catch(() => setServerStatus("sleeping"));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +36,8 @@ export default function LandingPage() {
     setError(null);
 
     try {
-      const res = await fetch("/api/profile/generate", {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const res = await fetch(`${baseUrl}/api/profile/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -160,14 +171,22 @@ export default function LandingPage() {
                 </div>
               )}
 
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full text-base font-bold shadow-lg"
-                disabled={!name.trim() || isSubmitting}
-              >
-                {isSubmitting ? "Initiating Research..." : "Generate Profile"}
-              </Button>
+              <div className="pt-2">
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 text-base font-medium shadow-sm transition-all"
+                  disabled={isSubmitting || !name.trim()}
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      {serverStatus !== "awake" ? "Waking up intelligence servers (this can take 60s)..." : "Generating Profile..."}
+                    </span>
+                  ) : (
+                    "Generate Profile"
+                  )}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>

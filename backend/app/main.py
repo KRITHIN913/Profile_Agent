@@ -13,10 +13,10 @@ from app.services.orchestrator import create_job, run_pipeline, get_job_events_g
 
 app = FastAPI(title="Diligencify Profile Builder API")
 
-# Configure CORS for Next.js dev origin
+# Configure CORS for Next.js dev and production direct calls
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,15 +49,20 @@ def check_rate_limit(request: Request):
 
 # --- Models ---
 
+class QueryRequest(BaseModel):
+    name: str
+    context: Optional[str] = None
+
 class GenerateRequest(BaseModel):
     name: str
     context: dict = {}
 
 # --- Endpoints ---
 
-@app.get("/health")
+@app.get("/api/health")
 async def health_check():
-    return {"status": "ok"}
+    """Simple endpoint to wake up the server from sleep."""
+    return {"status": "ok", "timestamp": time.time()}
 
 @app.post("/api/profile/generate")
 async def generate_profile(req: GenerateRequest, request: Request, background_tasks: BackgroundTasks):

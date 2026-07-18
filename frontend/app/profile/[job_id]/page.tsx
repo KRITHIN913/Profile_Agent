@@ -19,7 +19,8 @@ export default function ProfilePage() {
 
   const fetchStatusFallback = async () => {
     try {
-      const res = await fetch(`/api/profile/status/${job_id}`);
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const res = await fetch(`${baseUrl}/api/profile/status/${job_id}`);
       if (res.ok) {
         const data = await res.json();
         setPhase(data.phase);
@@ -52,7 +53,8 @@ export default function ProfilePage() {
     if (!job_id) return;
 
     // Connect to SSE stream
-    const es = new EventSource(`/api/profile/stream/${job_id}`);
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    const es = new EventSource(`${baseUrl}/api/profile/stream/${job_id}`);
     eventSourceRef.current = es;
 
     es.onmessage = (event) => {
