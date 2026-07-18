@@ -20,7 +20,8 @@ export default function LandingPage() {
   const [serverStatus, setServerStatus] = useState<"checking" | "awake" | "sleeping">("checking");
 
   useEffect(() => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    const rawUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    const baseUrl = rawUrl.endsWith("/") ? rawUrl.slice(0, -1) : rawUrl;
     fetch(`${baseUrl}/api/health`)
       .then(res => {
         if (res.ok) setServerStatus("awake");
@@ -36,7 +37,8 @@ export default function LandingPage() {
     setError(null);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const rawUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const baseUrl = rawUrl.endsWith("/") ? rawUrl.slice(0, -1) : rawUrl;
       const res = await fetch(`${baseUrl}/api/profile/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
