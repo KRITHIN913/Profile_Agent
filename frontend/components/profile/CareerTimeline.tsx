@@ -17,7 +17,7 @@ export function CareerTimeline({ timeline }: { timeline: CareerEntry[] }) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="italic text-muted">Not publicly available</p>
+          <p className="italic text-muted">No data found</p>
         </CardContent>
       </Card>
     )
@@ -39,25 +39,37 @@ export function CareerTimeline({ timeline }: { timeline: CareerEntry[] }) {
               <div className="absolute -left-[5px] top-1.5 h-[10px] w-[10px] rounded-full bg-accent ring-4 ring-white" />
               
               <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 mb-1">
-                <DataPoint 
-                  value={entry.title} 
-                  valueClassName="font-bold text-lg text-primary" 
-                />
-                <span className="hidden sm:inline text-gray-300">•</span>
-                <DataPoint 
-                  value={entry.organization} 
-                  valueClassName="font-medium text-brand-text" 
-                />
+                {entry.title !== "Not publicly available" && (
+                  <DataPoint 
+                    value={entry.title} 
+                    valueClassName="font-bold text-lg text-primary" 
+                  />
+                )}
+                {entry.title !== "Not publicly available" && entry.organization !== "Not publicly available" && (
+                  <span className="hidden sm:inline text-gray-300">•</span>
+                )}
+                {entry.organization !== "Not publicly available" && (
+                  <DataPoint 
+                    value={entry.organization} 
+                    valueClassName="font-medium text-brand-text" 
+                  />
+                )}
               </div>
               
-              <div className="text-sm font-mono text-muted mb-2">
-                {entry.start_date} — {entry.end_date}
-              </div>
+              {(entry.start_date !== "Not publicly available" || entry.end_date !== "Not publicly available") && (
+                <div className="text-sm font-mono text-muted mb-2">
+                  {entry.start_date !== "Not publicly available" ? entry.start_date : ""} 
+                  {(entry.start_date !== "Not publicly available" && entry.end_date !== "Not publicly available") ? " — " : ""} 
+                  {entry.end_date !== "Not publicly available" ? entry.end_date : ""}
+                </div>
+              )}
               
-              <DataPoint 
-                value={entry.description} 
-                className="text-sm text-gray-600 leading-relaxed" 
-              />
+              {entry.description !== "Not publicly available" && (
+                <DataPoint 
+                  value={entry.description} 
+                  className="text-sm text-gray-600 leading-relaxed" 
+                />
+              )}
             </div>
           ))}
         </div>

@@ -27,7 +27,7 @@ export function NetWorthCard({ netWorth }: { netWorth: NetWorth }) {
           <div className="flex flex-col gap-1">
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Estimated Value</span>
             <span className={`text-[15px] font-bold ${isMissing ? 'text-gray-500' : 'text-[#38A169]'}`}>
-              {isMissing ? netWorth.value : `${netWorth.currency} ${netWorth.value}`}
+              {isMissing ? 'No data found' : `${netWorth.currency} ${netWorth.value}`}
             </span>
           </div>
           

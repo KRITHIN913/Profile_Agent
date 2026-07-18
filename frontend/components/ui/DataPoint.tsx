@@ -12,9 +12,8 @@ const SENTINEL_NULL = "Not publicly available"
 const UNVERIFIED_FLAG = "[UNVERIFIED: Weak source match]"
 
 export function DataPoint({ label, value, className = "", valueClassName = "" }: DataPointProps) {
-  if (!value) return null
+  if (!value || value === SENTINEL_NULL) return null
 
-  const isMissing = value === SENTINEL_NULL
   const isUnverified = typeof value === 'string' && value.startsWith(UNVERIFIED_FLAG)
   
   let displayValue = value
@@ -33,8 +32,7 @@ export function DataPoint({ label, value, className = "", valueClassName = "" }:
         )}
         <span 
           className={`
-            text-sm leading-relaxed
-            ${isMissing ? "italic text-muted" : "text-brand-text"} 
+            text-sm leading-relaxed text-brand-text 
             ${valueClassName}
           `}
         >

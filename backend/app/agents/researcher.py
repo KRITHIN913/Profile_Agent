@@ -152,7 +152,7 @@ async def run_research(name: str, query_context: dict) -> ResearchCorpus:
 
     # 2. Run Searches (Tavily)
     urls_to_process = []
-    tavily_content_map = {}
+    tavily_data_map = {}
     
     if tavily_client:
         search_tasks = []
@@ -164,9 +164,12 @@ async def run_research(name: str, query_context: dict) -> ResearchCorpus:
             if isinstance(res, dict) and "results" in res:
                 for item in res["results"]:
                     url = item.get("url")
-                    if url and url not in tavily_content_map:
+                    if url and url not in tavily_data_map:
                         urls_to_process.append(url)
-                        tavily_content_map[url] = item.get("content", "")
+                        tavily_data_map[url] = {
+                            "content": item.get("content", ""),
+                            "title": item.get("title", "Unknown Title")
+                        }
     
     logger.info(f"Found {len(urls_to_process)} unique URLs.")
 
@@ -183,11 +186,13 @@ async def run_research(name: str, query_context: dict) -> ResearchCorpus:
         retrieved_at = datetime.now(timezone.utc).isoformat()
         credibility = get_credibility_tier(domain)
         
-        extracted_text, accessible, note = await fetch_and_extract(url, tavily_content_map.get(url))
+        tavily_data = tavily_data_map.get(url, {})
+        extracted_text, accessible, note = await fetch_and_extract(url, tavily_data.get("content", ""))
         
         # Base source record
         source = ExtractedSource(
             url=url,
+            title=tavily_data.get("title", "Unknown Title"),
             domain=domain,
             extracted_text=extracted_text or "",
             retrieved_at=retrieved_at,

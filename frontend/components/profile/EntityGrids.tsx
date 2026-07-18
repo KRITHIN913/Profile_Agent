@@ -26,7 +26,7 @@ export function EntityGrids({
         </CardHeader>
         <CardContent>
           {!education || education.length === 0 ? (
-            <p className="italic text-muted">Not publicly available</p>
+            <p className="italic text-muted">No data found</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {education.map((edu, idx) => (
@@ -51,7 +51,7 @@ export function EntityGrids({
         </CardHeader>
         <CardContent>
           {!affiliations || affiliations.length === 0 ? (
-            <p className="italic text-muted">Not publicly available</p>
+            <p className="italic text-muted">No data found</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {affiliations.map((aff, idx) => (
@@ -75,7 +75,7 @@ export function EntityGrids({
         </CardHeader>
         <CardContent>
           {!philanthropy || philanthropy.length === 0 ? (
-            <p className="italic text-muted">Not publicly available</p>
+            <p className="italic text-muted">No data found</p>
           ) : (
             <div className="grid grid-cols-1 gap-4">
               {philanthropy.map((phil, idx) => (

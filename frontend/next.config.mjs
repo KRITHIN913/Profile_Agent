@@ -9,12 +9,17 @@ const nextConfig = {
   },
 
   /* ── API proxy (dev convenience) ─────────────────────────────────────── */
-  // Proxies /api/* → FastAPI backend running on :8000
+  // Proxies /api/* → FastAPI backend (Render in production, localhost in dev)
   async rewrites() {
+    const isProd = process.env.NODE_ENV === 'production';
+    const backendUrl = isProd 
+      ? "https://profile-agent.onrender.com" 
+      : "http://localhost:8000";
+      
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:8000/api/:path*",
+        destination: `${backendUrl}/api/:path*`,
       },
     ];
   },

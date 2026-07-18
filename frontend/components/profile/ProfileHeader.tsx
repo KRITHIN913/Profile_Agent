@@ -22,8 +22,8 @@ export function ProfileHeader({ profile }: { profile: DiligenceProfile }) {
             )}
             <h1 className="text-2xl sm:text-3xl font-bold text-[#0a2540] tracking-tight">{profile.name}</h1>
           </div>
-          <p className="text-gray-700 leading-relaxed text-[15px]">
-            {profile.executive_summary}
+          <p className={`text-gray-700 leading-relaxed text-[15px] ${profile.executive_summary === 'Not publicly available' ? 'italic text-muted' : ''}`}>
+            {profile.executive_summary === 'Not publicly available' ? 'No data found' : profile.executive_summary}
           </p>
         </div>
       </div>
@@ -37,7 +37,9 @@ export function ProfileHeader({ profile }: { profile: DiligenceProfile }) {
           </div>
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Primary Role</span>
-            <span className="text-[15px] font-medium text-gray-800">{profile.basic_details.role}</span>
+            <span className={`text-[15px] font-medium ${profile.basic_details.role === 'Not publicly available' ? 'italic text-gray-400' : 'text-gray-800'}`}>
+              {profile.basic_details.role === 'Not publicly available' ? 'No data found' : profile.basic_details.role}
+            </span>
           </div>
         </div>
         
@@ -48,7 +50,9 @@ export function ProfileHeader({ profile }: { profile: DiligenceProfile }) {
           </div>
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Organization</span>
-            <span className="text-[15px] font-medium text-gray-800">{profile.basic_details.organization}</span>
+            <span className={`text-[15px] font-medium ${profile.basic_details.organization === 'Not publicly available' ? 'italic text-gray-400' : 'text-gray-800'}`}>
+              {profile.basic_details.organization === 'Not publicly available' ? 'No data found' : profile.basic_details.organization}
+            </span>
           </div>
         </div>
 
@@ -59,7 +63,9 @@ export function ProfileHeader({ profile }: { profile: DiligenceProfile }) {
           </div>
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Location</span>
-            <span className="text-[15px] font-medium text-gray-800">{profile.basic_details.location}</span>
+            <span className={`text-[15px] font-medium ${profile.basic_details.location === 'Not publicly available' ? 'italic text-gray-400' : 'text-gray-800'}`}>
+              {profile.basic_details.location === 'Not publicly available' ? 'No data found' : profile.basic_details.location}
+            </span>
           </div>
         </div>
       </div>
