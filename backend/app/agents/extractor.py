@@ -9,6 +9,7 @@ a deterministic fuzzy-matching citation verification pass.
 import os
 import json
 import logging
+import asyncio
 from typing import Dict, Any, List
 from rapidfuzz import fuzz
 from pydantic import ValidationError
@@ -24,9 +25,11 @@ try:
         "api_key": os.environ.get("OPENAI_API_KEY", "dummy"),
         "max_retries": 10
     }
-    base_url = os.environ.get("OPENAI_BASE_URL")
+    base_url = os.environ.get("OPENAI_BASE_URL", "").strip()
     if base_url:
         kwargs["base_url"] = base_url
+    else:
+        kwargs["base_url"] = "https://api.openai.com/v1"
     llm_client = AsyncOpenAI(**kwargs)
 except Exception as e:
     logger.warning(f"Failed to initialize OpenAI client: {e}")

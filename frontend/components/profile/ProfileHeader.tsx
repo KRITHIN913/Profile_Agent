@@ -1,56 +1,57 @@
 import * as React from "react"
 import { DiligenceProfile } from "@/types/profile"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
-import { DataPoint } from "@/components/ui/DataPoint"
 import { Building2, MapPin, Briefcase, User } from "lucide-react"
 
 export function ProfileHeader({ profile }: { profile: DiligenceProfile }) {
   return (
-    <div className="space-y-6">
-      {/* Executive Summary */}
-      <Card className="border-t-4 border-t-primary">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold flex items-center gap-2">
-            <User className="h-6 w-6 text-accent" />
-            {profile.name}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DataPoint 
-            value={profile.executive_summary} 
-            className="text-lg leading-relaxed text-brand-text/90"
-          />
-        </CardContent>
-      </Card>
+    <div className="space-y-4">
+      {/* Executive Summary Card */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 border-t-[6px] border-t-[#0a2540] overflow-hidden">
+        <div className="p-6 sm:p-8 space-y-4">
+          <div className="flex items-center gap-3">
+            <User className="h-7 w-7 text-[#c28d27]" />
+            <h1 className="text-2xl font-bold text-[#0a2540] tracking-tight">{profile.name}</h1>
+          </div>
+          <p className="text-gray-700 leading-relaxed text-[15px]">
+            {profile.executive_summary}
+          </p>
+        </div>
+      </div>
 
-      {/* Basic Details */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="pt-6 flex items-start gap-3">
-            <div className="bg-primary/10 p-2 rounded-lg">
-              <Briefcase className="h-5 w-5 text-primary" />
-            </div>
-            <DataPoint label="Primary Role" value={profile.basic_details.role} />
-          </CardContent>
-        </Card>
+      {/* Basic Details Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Primary Role */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
+          <div className="bg-gray-100/80 p-2.5 rounded-full shrink-0">
+            <Briefcase className="h-5 w-5 text-[#4a5568]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Primary Role</span>
+            <span className="text-[15px] font-medium text-gray-800">{profile.basic_details.role}</span>
+          </div>
+        </div>
         
-        <Card>
-          <CardContent className="pt-6 flex items-start gap-3">
-            <div className="bg-primary/10 p-2 rounded-lg">
-              <Building2 className="h-5 w-5 text-primary" />
-            </div>
-            <DataPoint label="Organization" value={profile.basic_details.organization} />
-          </CardContent>
-        </Card>
+        {/* Organization */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
+          <div className="bg-gray-100/80 p-2.5 rounded-full shrink-0">
+            <Building2 className="h-5 w-5 text-[#4a5568]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Organization</span>
+            <span className="text-[15px] font-medium text-gray-800">{profile.basic_details.organization}</span>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="pt-6 flex items-start gap-3">
-            <div className="bg-primary/10 p-2 rounded-lg">
-              <MapPin className="h-5 w-5 text-primary" />
-            </div>
-            <DataPoint label="Location" value={profile.basic_details.location} />
-          </CardContent>
-        </Card>
+        {/* Location */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
+          <div className="bg-gray-100/80 p-2.5 rounded-full shrink-0">
+            <MapPin className="h-5 w-5 text-[#4a5568]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Location</span>
+            <span className="text-[15px] font-medium text-gray-800">{profile.basic_details.location}</span>
+          </div>
+        </div>
       </div>
     </div>
   )

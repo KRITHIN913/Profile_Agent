@@ -12,9 +12,11 @@ Orchestrates the discovery and verification phase.
 import os
 import time
 import asyncio
+import json
 import logging
-from typing import Literal
+from typing import Literal, List
 from datetime import datetime, timezone
+from pydantic import ValidationError
 from openai import AsyncOpenAI
 from tavily import AsyncTavilyClient
 
@@ -33,9 +35,11 @@ try:
         "api_key": os.environ.get("OPENAI_API_KEY", "dummy"),
         "max_retries": 10
     }
-    base_url = os.environ.get("OPENAI_BASE_URL")
+    base_url = os.environ.get("OPENAI_BASE_URL", "").strip()
     if base_url:
         kwargs["base_url"] = base_url
+    else:
+        kwargs["base_url"] = "https://api.openai.com/v1"
     llm_client = AsyncOpenAI(**kwargs)
     tavily_client = AsyncTavilyClient(api_key=os.environ.get("TAVILY_API_KEY", "dummy"))
 except Exception as e:

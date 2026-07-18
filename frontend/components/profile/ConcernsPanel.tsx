@@ -1,51 +1,64 @@
 import * as React from "react"
 import { ConcernEntry } from "@/types/profile"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
-import { Badge } from "@/components/ui/Badge"
-import { DataPoint } from "@/components/ui/DataPoint"
-import { ShieldAlert } from "lucide-react"
+import { OctagonAlert } from "lucide-react"
 
 export function ConcernsPanel({ concerns }: { concerns: ConcernEntry[] }) {
   if (!concerns || concerns.length === 0) return null
 
   return (
-    <Card className="border-warning/30 shadow-sm bg-warning/5">
-      <CardHeader className="pb-3 border-b border-warning/10">
-        <CardTitle className="flex items-center gap-2 text-warning">
-          <ShieldAlert className="h-6 w-6" />
-          Adverse Media & Regulatory Concerns
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6 space-y-6">
+    <div className="rounded-xl border border-[#efd6c3] bg-[#fbf4ee] shadow-sm mb-8 overflow-hidden">
+      <div className="flex items-center gap-2 p-4 border-b border-[#efd6c3]">
+        <OctagonAlert className="h-5 w-5 text-[#d96726]" />
+        <h3 className="font-semibold text-[#d96726]">Adverse Media & Regulatory Concerns</h3>
+      </div>
+      
+      <div className="p-4 space-y-4">
         {concerns.map((concern, idx) => (
-          <div key={idx} className="flex gap-4">
-            <div className="shrink-0 mt-1">
-              <Badge variant={concern.severity === "high" ? "destructive" : concern.severity === "medium" ? "warning" : "default"}>
-                {concern.severity.toUpperCase()}
-              </Badge>
+          <div key={idx} className="flex flex-col gap-3">
+            <div className="flex items-start gap-3 flex-wrap sm:flex-nowrap">
+              <div className="flex items-center gap-2 shrink-0 mt-0.5">
+                {concern.severity === "high" && (
+                  <span className="bg-[#fee2e2] text-[#dc2626] text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider">
+                    High
+                  </span>
+                )}
+                {concern.severity === "medium" && (
+                  <span className="bg-[#fef08a] text-[#ca8a04] text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider">
+                    Medium
+                  </span>
+                )}
+                <span className="bg-[#fce9d3] text-[#d96726] text-[10px] font-semibold px-2 py-0.5 rounded">
+                  Unverified
+                </span>
+              </div>
+              <p className="text-sm font-medium text-slate-800 leading-snug">
+                {concern.description}
+              </p>
             </div>
-            <div className="space-y-2">
-              <DataPoint 
-                value={concern.description} 
-                valueClassName="text-brand-text font-medium leading-relaxed" 
-              />
-              <div className="flex flex-wrap gap-2 items-center text-xs text-muted">
-                <span className="font-semibold uppercase tracking-wider">Sources:</span>
-                {concern.sources.map((src, sIdx) => (
-                  <span key={sIdx} className="bg-white px-2 py-1 rounded border border-gray-200 flex items-center gap-1">
-                    <a href={src.source_url} target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline max-w-[200px] truncate">
-                      {new URL(src.source_url).hostname}
+            
+            <div className="flex flex-wrap items-center gap-2 ml-0 sm:ml-28">
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sources:</span>
+              {concern.sources.map((src, sIdx) => {
+                let hostname = src.source_url
+                try {
+                  hostname = new URL(src.source_url).hostname
+                } catch(e) {}
+                
+                return (
+                  <span key={sIdx} className="bg-white px-2 py-0.5 rounded-sm border border-gray-200 flex items-center gap-1.5 shadow-sm">
+                    <a href={src.source_url} target="_blank" rel="noopener noreferrer" className="text-[11px] text-gray-600 hover:text-[#d96726] hover:underline truncate max-w-[200px]">
+                      {hostname}
                     </a>
                     {src.matched_confidence === "unverified" && (
-                      <Badge variant="warning" className="ml-1 py-0 px-1 text-[10px]">Unverified</Badge>
+                      <span className="bg-[#fce9d3] text-[#d96726] text-[9px] font-semibold px-1 rounded">Unverified</span>
                     )}
                   </span>
-                ))}
-              </div>
+                )
+              })}
             </div>
           </div>
         ))}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
